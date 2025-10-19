@@ -4,7 +4,7 @@
 void chainTest(int argc, char** argv) {
 
     ChainArgParser parser;
-    parser.registerHandler({ "-a", "--add", "--sum" }, [](std::vector<Token>& args) {
+    parser.registerHandler({ "-a", "--add", "--sum" }, [](std::vector<Argument>& args) {
         int sum = 0;
         for (auto& arg : args) {
             sum += std::stoi(arg.value);

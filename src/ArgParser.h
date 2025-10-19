@@ -4,7 +4,14 @@
 #include <format>
 #include <functional>
 
-#include "Token.h"
+#include "Argument.h"
+
+// Terminology
+// Argument is anything passed in via the command line
+// Option is anything like -O3 or --verbose
+// Parameter is any string, path, or numerical value passed in after
+// an option
+// There may be zero or more parameters for an option
 
 enum class ParseResults {
     kOkay,
@@ -32,6 +39,5 @@ public:
 protected:
     ParseResults parse(int argc, char** argv);
 
-    std::vector<Token> tokens;
-    std::unordered_map<std::string, std::vector<Token>> commands;
+    std::unordered_map<std::string, std::vector<Argument>> parameterOptionMap;
 };

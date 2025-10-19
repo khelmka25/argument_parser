@@ -1,6 +1,6 @@
 #include "ChainArgParser.h"
 
-void ChainArgParser::registerHandler(std::initializer_list<std::string> options, std::function<void(std::vector<Token>&)>&& callback, OptionType optionType) noexcept {
+void ChainArgParser::registerHandler(std::initializer_list<std::string> options, std::function<void(std::vector<Argument>&)>&& callback, OptionType optionType) noexcept {
     for (auto& item : options) {
         callbackMapper[item] = callbackDescriptors.size();
     }
@@ -15,7 +15,7 @@ void ChainArgParser::registerHandler(std::initializer_list<std::string> options,
 ParseResults ChainArgParser::parse(int argc, char** argv) noexcept {
     this->ArgParser::parse(argc, argv);
 
-    for (auto& [option, args] : commands) {
+    for (auto& [option, args] : parameterOptionMap) {
         if (callbackMapper.find(option) != callbackMapper.end()) {
             CallbackDescriptor& descriptor = getDescriptor(option);
 
@@ -45,7 +45,7 @@ ParseResults ChainArgParser::parse(int argc, char** argv) noexcept {
     // ensure all required options are consumed
     if (nRequiredOptions != 0ull) {
         std::cout << std::format("Unfilled required options:") << std::endl;
-        for (auto& [option, args] : commands) {
+        for (auto& [option, args] : parameterOptionMap) {
             if (callbackMapper.find(option) != callbackMapper.end()) {
                 CallbackDescriptor& descriptor = getDescriptor(option);
                 if (descriptor.optionType == OptionType::kRequired && !descriptor.consumed) {

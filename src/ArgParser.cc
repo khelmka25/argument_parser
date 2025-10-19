@@ -6,49 +6,50 @@ ParseResults ArgParser::parse(int argc, char** argv) {
         return ParseResults::kNoArguments;
     }
 
-    // create tokens
-    tokens.clear();
-    tokens.reserve(argc - 1);
+    // create arguments
+    std::vector<Argument> arguments;
+    arguments.reserve(argc - 1);
 
-    for (int i = 0; i < argc; i++) {
-        std::string value(argv[i]);
-        tokens.emplace_back(std::move(value));
+    for (int i = 1; i < argc; i++) {
+        Argument arg(argv[i]);
+        arguments.push_back(arg);
     }
 
     // create options
-    commands.clear();
+    parameterOptionMap.clear();
 
-    bool optionHasArguments = true;
-    Token& lastOption = tokens.front();
-    Token& lastArg = tokens.back();
+    Argument* lastOption = &arguments.front();
+    Argument* lastParam = &arguments.back();
+    bool optionHasParameters = true;
 
-    for (auto& token : tokens) {
-        switch (token.type) {
-        case Token::Type::kOption: {
-            // before losing the previous token if it did not have any arguments
-            if (!optionHasArguments) {
-                commands[lastOption.value].clear();
+    for (auto& argument : arguments) {
+        switch (argument.type) {
+            case Argument::Type::kOption: {
+                // before losing the previous token if it did not have any arguments
+                if (!optionHasParameters) {
+                    parameterOptionMap[lastOption->value] = {};
+                }
+
+                optionHasParameters = false;
+                lastOption = &argument;
+                break;
             }
+            default:
+            case Argument::Type::KArgumentNumber:
+            case Argument::Type::KArgumentString: {
+                // commit this current argument to the current option
+                parameterOptionMap[lastOption->value].push_back(argument.value);
 
-            optionHasArguments = false;
-            lastOption = token;
-            break;
-        }
-        default:
-        case Token::Type::KArgumentNumber:
-        case Token::Type::KArgumentString: {
-            // commit this current argument to the current option
-            commands[lastOption.value].push_back(token.value);
+                optionHasParameters = true;
 
-            optionHasArguments = true;
-            lastArg = token;
-            break;
-        }
+                lastParam = &argument;
+                break;
+            }
         }
     }
 
-    if (!optionHasArguments) {
-        commands[lastOption.value].clear();
+    if (!optionHasParameters) {
+        parameterOptionMap[lastOption->value] = {};
     }
 
     return ParseResults::kOkay;

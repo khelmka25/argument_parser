@@ -9,7 +9,8 @@ void indexTest(int argc, char** argv) {
     if (auto& args = parser[{"-a", "--add", "--sum"}]; !args.empty()) {
         int sum = 0;
         for (auto& arg : args) {
-            sum += std::stoi(arg.value);
+            int v = std::stoi(arg.value);
+            sum += v;
         }
 
         std::cout << sum << std::endl;

@@ -11,11 +11,11 @@
 
 struct CallbackDescriptor {
     CallbackDescriptor() = default;
-    CallbackDescriptor(std::function<void(std::vector<Token>& args)>&& t_callback, OptionType t_optionType) {
+    CallbackDescriptor(std::function<void(std::vector<Argument>& args)>&& t_callback, OptionType t_optionType) {
         callback = std::move(t_callback);
         optionType = t_optionType;
     }
-    std::function<void(std::vector<Token>& args)> callback;
+    std::function<void(std::vector<Argument>& args)> callback;
     OptionType optionType;
     bool consumed;
 };
@@ -30,7 +30,7 @@ public:
     void operator=(const ChainArgParser&) = delete;
 
     ParseResults parse(int argc, char** argv) noexcept;
-    void registerHandler(std::initializer_list<std::string>, std::function<void(std::vector<Token>&)>&&, OptionType = OptionType::kOptional) noexcept;
+    void registerHandler(std::initializer_list<std::string>, std::function<void(std::vector<Argument>&)>&&, OptionType = OptionType::kOptional) noexcept;
 
 private:
     // Maps options to functional callbacks

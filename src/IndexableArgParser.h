@@ -5,7 +5,8 @@
 class IndexibleArgParser : private ArgParser {
 public:
     using ArgParser::parse;
-    std::vector<Token>& operator[](std::initializer_list<std::string>);
+    std::vector<Argument>& operator[](std::initializer_list<std::string>);
+
 private:
-    std::vector<Token> empty_set;
+    std::vector<Argument> empty_set;
 };
