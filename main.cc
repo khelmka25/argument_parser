@@ -1,7 +1,5 @@
 #include <iostream>
 
-#include "src/Argument.h"
-
 extern void indexTest(int argc, char** argv);
 extern void chainTest(int argc, char** argv);
 
