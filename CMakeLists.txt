@@ -10,9 +10,15 @@ target_include_directories(engine PUBLIC
     ${CMAKE_SOURCE_DIR}/include
 )
 
+add_subdirectory(${CMAKE_SOURCE_DIR}/deps/Catch2)
+
+enable_testing()
+add_subdirectory(tests)
+
 add_executable(${PROJECT_NAME} main.cc)
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     engine
+    Catch2WithMain
 )
 target_compile_options(${PROJECT_NAME} 
     PRIVATE 
